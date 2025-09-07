@@ -4,6 +4,7 @@ import categoryValidator from "./category-validator";
 import { CategoryService } from "./category-service";
 
 import logger from "../config/logger";
+import { asyncWrapper } from "../common/utils/wrapper";
 
 const router = express.Router();
 
@@ -15,7 +16,7 @@ router.post(
     categoryValidator,
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises, @typescript-eslint/unbound-method
-    categoryController.create,
+    asyncWrapper(categoryController.create),
 );
 
 export default router;

@@ -10,7 +10,7 @@ export class CategoryController {
         private categoryService: CategoryService,
         private logger: Logger,
     ) {
-        this.create = this.create.bind(this)
+        this.create = this.create.bind(this);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -23,6 +23,7 @@ export class CategoryController {
         const { name, priceConfiguration, attributes } = req.body as Category;
 
         // call the service
+
         const category = await this.categoryService.create({
             name,
             priceConfiguration,
