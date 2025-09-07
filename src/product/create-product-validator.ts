@@ -13,9 +13,9 @@ export default [
     body("priceConfiguration")
         .exists()
         .withMessage("Product priceConfiguration is required"),
-    body("image").custom((value, { req }) => {
-        if (!req.files) throw new Error("Product image is required");
+    // body("image").custom((value, { req }) => {
+    //     if (!req.files) throw new Error("Product image is required");
 
-        return true;
-    }),
+    //     return true;
+    // }),
 ];
