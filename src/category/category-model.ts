@@ -33,21 +33,26 @@ const priceConfigurationSchema = new mongoose.Schema<PriceConfiguration>({
 
 export interface CategoryDocument extends Category, Document {}
 
-const categorySchema = new mongoose.Schema<CategoryDocument>({
-    name: {
-        type: String,
-        required: true,
+const categorySchema = new mongoose.Schema<CategoryDocument>(
+    {
+        name: {
+            type: String,
+            required: true,
+        },
+        priceConfiguration: {
+            type: Map,
+            of: priceConfigurationSchema,
+            required: true,
+        },
+        attributes: {
+            type: [attributeSchema],
+            required: true,
+        },
     },
-    priceConfiguration: {
-        type: Map,
-        of: priceConfigurationSchema,
-        required: true,
+    {
+        timestamps: true,
     },
-    attributes: {
-        type: [attributeSchema],
-        required: true,
-    },
-});
+);
 
 // model
 
