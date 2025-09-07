@@ -1,24 +1,5 @@
-import mongoose from "mongoose";
-
-export interface PriceConfiguration {
-    [key: string]: {
-        priceType: "base" | "additional";
-        availableOptions: string[];
-    };
-}
-
-export interface Attribute {
-    name: string;
-    widgetType: "switch" | " radio";
-    defaultValue: string;
-    availableOptions: string[];
-}
-
-export interface Category {
-    name: string;
-    priceConfiguration: PriceConfiguration;
-    attributes: Attribute[];
-}
+import mongoose, { Document } from "mongoose";
+import { Attribute, Category, PriceConfiguration } from "./category-types";
 
 // Schema
 
@@ -50,7 +31,9 @@ const priceConfigurationSchema = new mongoose.Schema<PriceConfiguration>({
     },
 });
 
-const categorySchema = new mongoose.Schema<Category>({
+export interface CategoryDocument extends Category, Document {}
+
+const categorySchema = new mongoose.Schema<CategoryDocument>({
     name: {
         type: String,
         required: true,
@@ -58,7 +41,7 @@ const categorySchema = new mongoose.Schema<Category>({
     priceConfiguration: {
         type: Map,
         of: priceConfigurationSchema,
-        reqeuired: true,
+        required: true,
     },
     attributes: {
         type: [attributeSchema],
@@ -68,6 +51,4 @@ const categorySchema = new mongoose.Schema<Category>({
 
 // model
 
-const CategoryModel = mongoose.model("Category", categorySchema);
-
-export default CategoryModel;
+export default mongoose.model<CategoryDocument>("Category", categorySchema);
