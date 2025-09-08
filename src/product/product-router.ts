@@ -11,6 +11,7 @@ import { ProductService } from "./product-service";
 import fileUpload from "express-fileupload";
 import { S3Storage } from "../common/services/S3Storage";
 import createHttpError from "http-errors";
+import updateProductValidator from "./update-product-validator";
 
 const router = express.Router();
 
@@ -48,9 +49,9 @@ router.put(
             next(error);
         },
     }),
-    createProductValidator,
+    updateProductValidator,
     // eslint-disable-next-line @typescript-eslint/no-misused-promises, @typescript-eslint/unbound-method
-    asyncWrapper(productController.create),
+    asyncWrapper(productController.update),
 );
 
 export default router;

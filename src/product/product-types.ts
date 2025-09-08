@@ -1,7 +1,7 @@
 export interface Product {
     name: string;
     description: string;
-    priceConfiguretion: string;
+    priceConfiguration: string;
     attributes: string;
     tenantId: string;
     categoryId: string;

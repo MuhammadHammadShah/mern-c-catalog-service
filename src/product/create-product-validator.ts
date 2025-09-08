@@ -13,6 +13,7 @@ export default [
     body("priceConfiguration")
         .exists()
         .withMessage("Product priceConfiguration is required"),
+        // todo remove comment and test it
     // body("image").custom((value, { req }) => {
     //     if (!req.files) throw new Error("Product image is required");
 
