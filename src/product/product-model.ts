@@ -1,5 +1,6 @@
-import mongoose from "mongoose";
+import mongoose, { AggregatePaginateModel } from "mongoose";
 import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
+import { Product } from "./product-types";
 
 // Schema
 
@@ -68,4 +69,7 @@ productSchema.plugin(mongooseAggregatePaginate);
 
 // model
 
-export default mongoose.model("Product", productSchema);
+export default mongoose.model<Product, AggregatePaginateModel<Product>>(
+    "Product",
+    productSchema,
+);
