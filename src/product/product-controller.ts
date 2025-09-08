@@ -1,12 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { validationResult } from "express-validator";
 import { ProductService } from "./product-service";
+import { v4 as uuidv4 } from "uuid";
 import createHttpError from "http-errors";
 import { NextFunction, Request, Response } from "express";
 import { Product } from "./product-types";
+import { FileStorage } from "../common/types/storage";
+import { UploadedFile } from "express-fileupload";
 
 export class ProductController {
-    constructor(private productService: ProductService) {}
+    constructor(
+        private productService: ProductService,
+        private storage: FileStorage,
+    ) {}
     create = async (req: Request, res: Response, next: NextFunction) => {
         const result = validationResult(req);
         if (!result.isEmpty()) {
@@ -15,9 +21,17 @@ export class ProductController {
 
         // Create Product
 
-        // todo : image upload
+        //  image upload
 
-        // todo : save product to database
+        const image = req.files!.image as UploadedFile;
+        const imageName = uuidv4();
+
+        //  save product to database
+
+        await this.storage.upload({
+            filename: imageName,
+            fileData: image.data,
+        });
         const {
             name,
             description,
@@ -36,7 +50,7 @@ export class ProductController {
             tenantId,
             isPublish,
             categoryId,
-            image: "image.jpg",
+            image: imageName,
         };
         // add proper request body types
         const newProduct = await this.productService.createProduct(
