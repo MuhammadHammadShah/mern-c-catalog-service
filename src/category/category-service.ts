@@ -6,4 +6,8 @@ export class CategoryService {
         const newCategory = new CategoryModel(category);
         return newCategory.save();
     }
+
+    async getAllCategories() {
+        return CategoryModel.find();
+    }
 }

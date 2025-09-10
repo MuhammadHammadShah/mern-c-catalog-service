@@ -33,4 +33,10 @@ export class CategoryController {
         this.logger.info(`Created category`, { id: category._id });
         res.json({ id: category._id });
     }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    getAll = async (req: Request, res: Response, next: NextFunction) => {
+        const categories = await this.categoryService.getAllCategories();
+        res.json(categories);
+    }
 }
