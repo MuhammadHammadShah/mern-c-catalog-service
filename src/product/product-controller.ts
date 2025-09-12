@@ -142,54 +142,38 @@ export class ProductController {
 
     /** */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    index = async (req: Request, res: Response, next: NextFunction) => {
-        const { q, tenantId, categoryId, isPublish } = req.query;
+index = async (req: Request, res: Response) => {
+    const { q, tenantId, categoryId, isPublish } = req.query;
 
-        const filters: Filter = {};
+    const filters: Filter = {};
 
-        if (isPublish === "true") {
-            filters.isPublish = true;
-        }
+    if (isPublish === "true") filters.isPublish = true;
+    if (tenantId) filters.tenantId = tenantId as string;
+    if (categoryId && mongoose.Types.ObjectId.isValid(categoryId as string)) {
+        filters.categoryId = new mongoose.Types.ObjectId(categoryId as string);
+    }
 
-        if (tenantId) {
-            filters.tenantId = tenantId as string;
-        }
+    const products = await this.productService.getProducts(
+        q as string,
+        filters,
+        {
+            page: req.query.page ? parseInt(req.query.page as string) : 1,
+            limit: req.query.limit ? parseInt(req.query.limit as string) : 10,
+        },
+    );
 
-        if (
-            categoryId &&
-            mongoose.Types.ObjectId.isValid(categoryId as string)
-        ) {
-            filters.categoryId = new mongoose.Types.ObjectId(
-                categoryId as string,
-            );
-        }
-        // todo add logging
-        const products = await this.productService.getProducts(
-            q as string,
-            filters,
-            {
-                page: req.query.page ? parseInt(req.query.page as string) : 1,
-                limit: req.query.limit
-                    ? parseInt(req.query.limit as string)
-                    : 10,
-            },
-        );
+    // Map images
+    const finalProducts = (products.data as Product[]).map(
+        (product: Product) => ({
+            ...product,
+            image: this.storage.getObjectUri(product.image),
+        })
+    );
 
-        // Final Product
+    res.json({
+        ...products,
+        data: finalProducts, // replace old data with mapped images
+    });
+};
 
-        const finalProducts = (products.data as Product[]).map(
-            (product: Product) => {
-                return {
-                    ...product,
-                    image: this.storage.getObjectUri(product.image),
-                };
-            },
-        );
-
-        res.json({
-            ...products,
-            data: finalProducts,
-        });
-    };
-    /** */
 }

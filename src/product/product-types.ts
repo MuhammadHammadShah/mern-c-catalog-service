@@ -4,11 +4,14 @@ export interface Product {
     _id?: mongoose.Types.ObjectId;
     name: string;
     description: string;
-    priceConfiguration: string;
-    attributes: string;
+    priceConfiguration: Record<string, any>; // object, not string
+    attributes: { name: string; value: any }[]; // array, not string
     tenantId: string;
-    categoryId: string;
+    categoryId: mongoose.Types.ObjectId;
     image: string;
+    isPublish: boolean;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export interface Filter {

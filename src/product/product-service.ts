@@ -1,4 +1,4 @@
-import { paginationDetails } from "../config/pagination";
+import { paginationLabels } from "../config/pagination";
 import productModel from "./product-model";
 import { Filter, PaginateQuery, Product } from "./product-types";
 
@@ -22,21 +22,19 @@ export class ProductService {
         });
     }
 
-    async getProducts(
-        q: string,
-        filters: Filter,
-        paginateQuery: PaginateQuery,
-    ) {
-        const searchQueryRegexp = new RegExp(q, "i");
-        const matchQuery = {
-            ...filters,
-            name: searchQueryRegexp,
-        };
+ 
+    async getProducts(q: string, filters: Filter, paginateQuery: PaginateQuery) {
+        // Build query
+        const matchQuery: any = { ...filters };
+
+        if (q && typeof q === "string" && q.trim() !== "") {
+            matchQuery.name = { $regex: q, $options: "i" };
+        }
+
+        console.log("Final matchQuery:", JSON.stringify(matchQuery, null, 2));
 
         const aggregate = productModel.aggregate([
-            {
-                $match: matchQuery,
-            },
+            { $match: matchQuery },
             {
                 $lookup: {
                     from: "categories",
@@ -48,24 +46,20 @@ export class ProductService {
                             $project: {
                                 _id: 1,
                                 name: 1,
-                                priceConfiguration: 1,
                                 attributes: 1,
+                                priceConfiguration: 1,
                             },
                         },
                     ],
                 },
             },
-            {
-                $unwind: "$category", // same to "as"
-            },
+            { $unwind: { path: "$category", preserveNullAndEmptyArrays: true } },
         ]);
 
         return productModel.aggregatePaginate(aggregate, {
             ...paginateQuery,
-            customLabels: paginationDetails,
+            customLabels: paginationLabels,
         });
-
-        // const result = await aggregate.exec();
-        // return result as Product[];
     }
+
 }
