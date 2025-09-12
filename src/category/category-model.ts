@@ -3,21 +3,28 @@ import { Attribute, Category, PriceConfiguration } from "./category-types";
 
 // Schema
 
-const attributeSchema = new mongoose.Schema<Attribute>({
-    name: {
-        type: String,
-        required: true,
+const attributeSchema = new mongoose.Schema<Attribute>(
+    {
+        name: {
+            type: String,
+            required: true,
+        },
+        widgetType: {
+            type: String,
+            enum: ["switch", "radio"],
+            required: true,
+        },
+        defaultValue: {
+            type: mongoose.Schema.Types.Mixed,
+            required: true,
+        },
+        availableOptions: {
+            type: [String],
+            required: true,
+        },
     },
-    widgetType: {
-        type: String,
-        enum: ["switch", "radio"],
-        required: true,
-    },
-    defaultValue: {
-        type: mongoose.Schema.Types.Mixed,
-        required: true,
-    },
-});
+    { _id: false },
+);
 
 const priceConfigurationSchema = new mongoose.Schema<PriceConfiguration>({
     priceType: {
