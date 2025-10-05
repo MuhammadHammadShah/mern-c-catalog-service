@@ -7,7 +7,7 @@ export interface Product {
     priceConfiguration: Record<string, any>; // object, not string
     attributes: { name: string; value: any }[]; // array, not string
     tenantId: string;
-    categoryId: mongoose.Types.ObjectId;
+    categoryId: string
     image: string;
     isPublish: boolean;
     createdAt?: Date;
